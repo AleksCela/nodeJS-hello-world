@@ -1,29 +1,19 @@
-import http from 'http';
+import express from 'express'
 import fsp from "fs/promises";
+const app = express()
+const port = 3000
 const hostname = '127.0.0.1';
-const port = 3000;
 
-const server = http.createServer(async (req, res) => {
-    // res.statusCode = 200;
-    // res.setHeader('Content-Type', 'text/html');
-    if (req.url === '/') {
-        const content = await fsp.readFile('./index.html', 'utf-8')
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/html');
-        res.end(content)
-    } else if (req.url === '/about') {
-        const content = await fsp.readFile('./about.html', 'utf-8')
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/html');
-        res.end(content)
-    } else {
+app.get('/', async (req, res) => {
+    const content = await fsp.readFile('./index.html', 'utf-8')
+    res.send(content)
+})
 
-        res.statusCode = 404;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end("Not found")
-    }
-});
+app.get('/about', async (req, res) => {
+    const content = await fsp.readFile('./about.html', 'utf-8')
+    res.send(content)
+})
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.listen(port, () => {
+    console.log(`Server running at http://${hostname}:${port}/`)
+})
